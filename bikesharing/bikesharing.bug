@@ -1,0 +1,58 @@
+## Version with quadratic dependence on feeling temperature
+##
+data {
+   N <- 365 * 24
+}   
+model {
+   for (i in 1:N) {
+      casual[i] ~ dpois(mu[i])
+      log(mu[i]) <- alpha +
+        beta.weekday[weekday[i]] +
+	holiday[i] * beta.holiday +
+	beta.hour[hr[i]] +
+	temp2[i, 1] * beta.temp[1] + temp2[i,2] * beta.temp[2] +
+	hum[i] * beta.humidity +
+        windspeed[i] * beta.windspeed +
+	beta.weather[weathersit[i]] +    
+        beta.month[mnth[i]] +
+	beta.season[season[i]]
+
+        loglik.hour[i] <- logdensity.pois(casual[i], mu[i]) * !shutdown[i]
+    }
+
+    alpha ~ dnorm(0, 1.0E-4)
+    beta.holiday ~ dnorm(0, 1.0E-4)
+    beta.temp[1] ~ dnorm(0, 1.0E-4)
+    beta.temp[2] ~ dnorm(0, 1.0E-4)
+    beta.humidity ~ dnorm(0, 1.0E-4)
+    beta.windspeed ~ dnorm(0, 1.0E-4)
+
+    beta.hour[1] <- 0
+    for (i in 2:24) {
+       beta.hour[i] ~ dnorm(0, 1.0E-4)
+    }
+
+    beta.weekday[1] <- 0
+    for (j in 2:7) {
+       beta.weekday[j] ~ dnorm(0, 1.0E-4)
+    }
+    
+    beta.month[1] <- 0
+    for (i in 2:12) {
+       beta.month[i] ~ dnorm(0, 1.0E-4)
+    }
+
+    beta.season[1] <- 0
+    for (i in 2:4) {
+       beta.season[i] ~ dnorm(0, 1.0E-4)
+    }
+
+    beta.weather[1] <- 0
+    for (i in 2:3) {
+       beta.weather[i] ~ dnorm(0, 1.0E-4)
+    }
+
+    for (i in 1:365) {
+       loglik.day[i] <- sum(loglik.hour[24*(i-1) + 1:24])
+    }	   
+}

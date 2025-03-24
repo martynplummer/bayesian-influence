@@ -1,0 +1,38 @@
+Artificial data set created by Hawkins, Bradu and Kass (1984). The data set is 
+extensively analysed from a Bayesian local influence perspective by Thomas et al (2018).
+It is available as the hbk dataset in the R package robustbase (Maechler et al 2024).
+
+@article{Hawkins1984,
+  author={Hawkins,Douglas M. and Bradu,Dan and Kass,Gordon V.},
+  year={1984},
+  title={Location of Several Outliers in Multiple-Regression Data Using Elemental Sets},
+  journal={Technometrics},
+  volume={26},
+  number={3},
+  pages={197-208},
+  isbn={0040-1706},
+  language={English},
+}
+
+@article{Thomas2018,
+  author={Thomas,Zachary M. and MacEachern,Steven N. and Peruggia,Mario},
+  year={2018},
+  title={Reconciling Curvature and Importance Sampling Based Procedures for Summarizing Case Influence in Bayesian Models},
+  journal={Journal of the American Statistical Association},
+  volume={113},
+  number={524},
+  pages={1669-1683},
+  isbn={0162-1459},
+  language={English},
+}
+
+@Manual{Maechler2024,
+  title = {robustbase: Basic Robust Statistics},
+  author = {Martin Maechler and Peter Rousseeuw and Christophe Croux and Valentin Todorov and Andreas Ruckstuhl and Matias Salibian-Barrera and Tobias Verbeke and Manuel Koller and Eduardo L. T. Conceicao and Maria {Anna di Palma}},
+  year = {2024},
+  note = {R package version 0.99-4-1},
+  url = {http://robustbase.r-forge.r-project.org/},
+  url = {http://robustbase.r-forge.r-project.org/},
+}
+
+

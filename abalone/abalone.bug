@@ -1,0 +1,18 @@
+model {
+
+   for (i in 1:N) {
+      shucked.weight[i] ~ dgamma(shape, rate[i])
+      rate[i] <- shape*mu[i]
+      log(mu[i]) <- alpha + sex[i] * beta[1] + llength[i] * beta[2] +
+         ldiameter[i] * beta[3] + lheight[i] * beta[4] +
+	 lwhole.weight[i] * beta[5]
+      logdensity[i] <- logdensity.gamma(shucked.weight[i], shape, rate[i])
+   }
+   alpha ~ dnorm(0, 1.0E-4)
+   for (i in 1:5) {
+      beta[i] ~ dnorm(0, 1.0E-4)
+   }
+   shape ~ dgamma(60,1)
+
+}
+

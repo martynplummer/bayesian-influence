@@ -1,0 +1,18 @@
+model {
+   for (i in 1:length(y)) {
+      y[i] ~ dbin(pi[i], n[i])
+      logit(pi[i])  <-  phi[i]
+      phi[i] ~ dnorm(beta, 1/w^2)
+
+      ## Likelihood based statistics for measuring conflict
+      L1[i] <- y[i] * log(pi[i]) + (n[i] - y[i]) * log(1 - pi[i])
+      L2[i] <- log(pi[i])
+      L3[i] <- log(1 - pi[i])
+   }
+   beta ~ dunif(-10,10)
+   w ~ dunif(0.01,100)
+
+   ## Posterior predictive for a new hospital
+   phi.new ~ dnorm(beta, 1/w^2)
+   logit(pi.new) <- phi.new
+}

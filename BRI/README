@@ -1,0 +1,13 @@
+Bristol Royal Infirmary data from Marshall and Spiegelhalter (2007)
+
+@article{Marshall2007,
+    author={Marshall,E. C. and Spiegelhalter,D. J.},
+    year={2007},
+    title={Identifying outliers in {B}ayesian hierarchical models: a simulation-based approach},
+    journal={Bayesian analysis},
+    volume={2},
+    number={2},
+    isbn={1936-0975},
+    language={English}
+}
+

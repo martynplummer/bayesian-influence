@@ -1,0 +1,14 @@
+Data originally from the United Network for Organ Sharing (UNOS) and published by Gelfand (2003).
+The data do not appear to be directly accessible from the UNOS web site: https::/unos.org
+
+@incollection{Gelfand2003,
+  title={Some comments on model criticism},
+  author={Gelfand, Alan E.},
+  booktitle={Highly Structured Stochastic Systems},
+  editor={Green, Peter J. and Hjort, Nils Lid and Richardson, Sylvia},
+  pages={449--454},
+  year={2003},
+  publisher={Oxford University Press},
+  address={Oxford, UK}
+}
+
