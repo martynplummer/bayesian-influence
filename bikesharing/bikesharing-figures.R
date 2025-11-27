@@ -1,4 +1,6 @@
-### Run bikesharing-fit.R first to create diagnostics h, v, V
+### Run bikesharing-fit.R first to create diagnostics h, v, V, h.hourly, v.hourly
+source("read-data.R")
+load("bikesharing.RData")
 
 library(ggplot2)
 library(dplyr)
@@ -23,9 +25,8 @@ ev <- eigen(Omega)
 plot(ev$values[1:50])
 
 ## Take only the top eigenvalues
-m <- 7
-S <- ev$vectors[,1:m]
-Lambda <- diag(ev$values[1:m])
+S <- ev$vectors[,1:7]
+Lambda <- diag(ev$values[1:7])
 Omega7 <- S %*% Lambda %*% t(S)
 
 CLOUT7 <- diag(Omega7)
@@ -73,12 +74,14 @@ outlier.data <- data.frame(x = outlier.dates,
 ticks <- as.Date(c(paste0("2011-", 1:12, "-1"), "2011-12-31"))
 midmonth <- as.Date(paste0("2011-", 1:12, "-15"))
 
+### Some complexity in creating a custom axis with month labels in between the
+### tick marks
 p <- ggplot(data=plot.data, mapping=aes(x=x, y=y, ymax=y)) +
     geom_linerange(ymin=0) +
     scale_y_continuous(expand=expansion(mult=c(0, 0.1))) +
     facet_wrap(~ group, ncol=1, scales="free_y", labeller=label_parsed) +
-    geom_text(data=outlier.data, mapping=aes(x=x, y=y, hjust=hjust, vjust=vjust,
-                                             label=label)) +
+    geom_text(data=outlier.data,
+              mapping=aes(x=x, y=y, hjust=hjust, vjust=vjust, label=label)) +
     scale_x_date(breaks = midmonth,
                  minor_breaks = ticks,
                  labels = scales::label_date("%b"),                

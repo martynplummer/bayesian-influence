@@ -1,3 +1,10 @@
+library(rjags)
+load.module("glm")
+load.module("diag")
+
+set.seed(271125)
+jags.seed(521172)
+
 source("read-data.R")
 
 jags.data <- bikedata2011[, c("holiday", "season", "mnth", "hr", "shutdown",
@@ -10,9 +17,6 @@ jags.data$shutdown <- as.numeric(jags.data$shutdown)
 jags.data$hr <- jags.data$hr + 1
 jags.data$weekday <- jags.data$weekday + 1
 
-library(rjags)
-load.module("glm")
-load.module("diag")
 
 initfun <- function() {
   list(alpha = rnorm(1),
@@ -49,3 +53,6 @@ v.hourly[bikedata2011$shutdown] <- 0
 ## Leverage by day
 h <- aggregate(h.hourly, by=bikedata2011[,"dteday",drop=FALSE], FUN=sum)$x
 
+## Save data
+save(list= c("h", "v", "V", "h.hourly", "v.hourly"),
+     file="bikesharing.RData") 
