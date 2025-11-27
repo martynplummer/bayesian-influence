@@ -1,10 +1,14 @@
 library(rjags)
 load.module("glm")
-load.module("dic")
+load.module("diag")
 
-unos <- read.csv("unos-data.csv")
+set.seed(231125)
+jags.seed(521132)
+
+unos <- read.csv("../common/unos-data.csv")
 unos$age <- unos$age/10
 
+source("../common/unos-init.R")
 
 cal_diagnostics <- function(model.file, ...) {
 
@@ -15,14 +19,13 @@ cal_diagnostics <- function(model.file, ...) {
     m <- jags.model(model.file,
                     data=data, 
                     n.chains=5,
-                    inits=list(mu.alpha=-1, mu.beta=0.1, tau.alpha=10, tau.beta=10))
-    update(m, 50000)
+                    inits=initfun)
+    update(m, 20000)
     
-    s <- jags.samples(m, variable.names=c("mu.alpha", "sigma.alpha",
-                                          "logpi", "log1mpi", "y", "y", "y"),
-                      n.iter=100000, thin=20,
-                      stat=c(rep("value", 4),"logdensity", "logdensity_total", "leverage"),
-                      summary=rep(c("trace","var", "mean"), times=c(2, 4, 1)))
+    s <- jags.samples(m, variable.names=c("logpi", "log1mpi", "y", "y", "y"),
+                      n.iter=100000, thin=10,
+                      stat=c(rep("value", 2),"logdensity", "logdensity_total", "leverage"),
+                      summary=c(rep("var", 4), "mean"))
 
     pD <- apply(s$leverage$mean$y, 2, sum)
     
@@ -32,9 +35,7 @@ cal_diagnostics <- function(model.file, ...) {
     pW.binomial <- apply(s$logdensity$var$y, 2, sum)
     pV <- 2 * c(s$logdensity_total$var$y)
 
-    list(pD=pD, pW.binary=pW.binary, pW.binomial=pW.binomial, pV=pV,
-         mu.alpha = s$value$trace$mu.alpha,
-         sigma.alpha = s$value$trace$sigma.alpha)
+    list(pD=pD, pW.binary=pW.binary, pW.binomial=pW.binomial, pV=pV)
 }
 
 ## Reference posterior

@@ -6,26 +6,32 @@ load.module("glm")
 load.module("diag")
 library(lme4)
 
-unos <- read.csv("unos-data.csv")
-unos$age <- unos$age/10 
+set.seed(121125)
+jags.seed(201125)
+
+source("read-unos-data.R")
+source("unos-init.R")
 
 ### Get MLEs for the fixed effects using glmer
 
-glmer.out <- glmer(cbind(y, n - y) ~ age + (1 + age | centre), family=binomial(),
-                   data=unos)
+glmer.out <- glmer(y ~ age + (1 + age | centre), family=binomial(),
+                   data=unos_binary)
 
 ## Extract fixed effects and recentre the intercept
 beta <- glmer.out@beta
-beta[1] <- beta[1] + mean(unos$age) * beta[2]
+beta[1] <- beta[1] + mean(unos_binary$age) * beta[2]
 
 m <- jags.model("unos-reference.bug",
-                data=c(unos[,c("centre","age","n","y")]),
+                data=unos_binary[,c("centre","age","y")],
                 n.chains=5,
-                inits=list(mu.alpha=-1, mu.beta=0.1, tau.alpha=10, tau.beta=10))
-update(m, 50000)
+                inits=initfun)
+update(m, 20000)
 plot.samples <- jags.samples(m, c("mu.alpha", "mu.beta", "sigma.alpha", "sigma.beta"),
-                             n.iter=100000, thin=50)
+                             n.iter=100000, thin=10)
+
 plot.data <- as.data.frame(lapply(plot.samples, c))
+
+### Create plots
 
 plot.list <- vector("list", 4)
 theme_set(cowplot::theme_cowplot())

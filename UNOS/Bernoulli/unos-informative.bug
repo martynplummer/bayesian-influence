@@ -3,12 +3,10 @@
 
 model {
       
-    for (i in 1:50) {
-        y[i] ~ dbin(pi[i], n[i])
+    for (i in 1:length(y)) {
+        y[i] ~ dbern(pi[i])
         logit(pi[i]) <- mu.alpha + alpha[centre[i]] +
                         (mu.beta + beta[centre[i]]) * (age[i] - mean(age))
-        logpi[i] <- log(pi[i])
-        log1mpi[i] <- log(1 - pi[i])
     }
     for (c in 1:10) {
         ## Sum to zero constraint on random effects

@@ -1,12 +1,16 @@
+
 library(ggplot2)
 library(dplyr)
 library(cowplot)
 library(rjags)
 load.module("glm")
-load.module("dic")
+load.module("diag")
 library(lme4)
 
-unos <- read.csv("unos-data.csv")
+set.seed(231125)
+set.seed(521132)
+
+unos <- read.csv("../common/unos-data.csv")
 unos$age <- unos$age/10 
 
 ### Get MLEs for the fixed effects using glmer
@@ -22,9 +26,9 @@ m <- jags.model("unos-reference.bug",
                 data=c(unos[,c("centre","age","n","y")]),
                 n.chains=5,
                 inits=list(mu.alpha=-1, mu.beta=0.1, tau.alpha=10, tau.beta=10))
-update(m, 50000)
+update(m, 20000)
 plot.samples <- jags.samples(m, c("mu.alpha", "mu.beta", "sigma.alpha", "sigma.beta"),
-                             n.iter=100000, thin=50)
+                             n.iter=100000, thin=10)
 plot.data <- as.data.frame(lapply(plot.samples, c))
 
 plot.list <- vector("list", 4)

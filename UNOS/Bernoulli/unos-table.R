@@ -2,39 +2,34 @@ library(rjags)
 load.module("glm")
 load.module("diag")
 
-unos <- read.csv("unos-data.csv")
-unos$age <- unos$age/10
+set.seed(121125)
+jags.seed(201125)
 
+source("read-unos-data.R")
+source("unos-init.R")
 
 cal_diagnostics <- function(model.file, ...) {
 
     ## Optional arguments (...) are fixed hyper-parameters passed to
     ## the model as data
-    data <- c(unos[, c("centre", "age", "n", "y")], ...)
+    data <- c(unos_binary[, c("centre", "age", "y")], ...)
     
     m <- jags.model(model.file,
                     data=data, 
                     n.chains=5,
-                    inits=list(mu.alpha=-1, mu.beta=0.1, tau.alpha=10, tau.beta=10))
-    update(m, 50000)
+                    inits=initfun)
+    update(m, 20000)
     
-    s <- jags.samples(m, variable.names=c("mu.alpha", "sigma.alpha",
-                                          "logpi", "log1mpi", "y", "y", "y"),
-                      n.iter=100000, thin=20,
-                      stat=c(rep("value", 4),"logdensity", "logdensity_total", "leverage"),
-                      summary=rep(c("trace","var", "mean"), times=c(2, 4, 1)))
+    s <- jags.samples(m, variable.names="y",
+                      n.iter=100000, thin=10,
+                      stat=c("loglikelihood", "loglikelihood_total", "leverage"),
+                      summary=c("var","var", "mean"))
 
     pD <- apply(s$leverage$mean$y, 2, sum)
-    
-    pW.binary <- with(c(unos, s$value$var), y * logpi + (n - y) * log1mpi)
-    pW.binary <- apply(pW.binary, 2, sum)
-    
-    pW.binomial <- apply(s$logdensity$var$y, 2, sum)
-    pV <- 2 * c(s$logdensity_total$var$y)
+    pW <- apply(s$loglikelihood$var$y, 2, sum)
+    pV <- 2 * c(s$loglikelihood_total$var$y)
 
-    list(pD=pD, pW.binary=pW.binary, pW.binomial=pW.binomial, pV=pV,
-         mu.alpha = s$value$trace$mu.alpha,
-         sigma.alpha = s$value$trace$sigma.alpha)
+    list(pD=pD, pW=pW, pV=pV)
 }
 
 ## Reference posterior
@@ -57,7 +52,7 @@ for (i in seq_along(concentration.samples)) {
 
 make_table <- function(samples) {
     pD <- sapply(samples, \(x) mean(x$pD))
-    pW <- sapply(samples, \(x) mean(x$pW.binary))
+    pW <- sapply(samples, \(x) mean(x$pW))
     pV <- sapply(samples, \(x) mean(x$pV))
     
     data.frame("pD" = round(pD, 1),
@@ -74,4 +69,3 @@ tab <- rbind(data.frame(prior.mean=0, prior.sd=NA,
                         make_table(concentration.samples)))
 
 knitr::kable(tab, format="latex")
-

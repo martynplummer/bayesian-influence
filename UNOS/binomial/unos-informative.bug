@@ -1,10 +1,12 @@
-## Reference model for the UNOS data with weakly informative priors
-model {
+# Model with informative priors depending on hyper-parameters a (location) and b(standard deviation)
+# which are passed to the model with the data.
 
+model {
+      
     for (i in 1:50) {
         y[i] ~ dbin(pi[i], n[i])
         logit(pi[i]) <- mu.alpha + alpha[centre[i]] +
-                        (mu.beta + beta[centre[i]]) * (age[i] - mean(age))
+                        (mu.beta + beta[centre[i]]) * (age[i] - 4.5)
         logpi[i] <- log(pi[i])
         log1mpi[i] <- log(1 - pi[i])
     }
@@ -18,12 +20,14 @@ model {
         beta0[c] ~ dnorm(0, tau.beta)
     }
 
-    ## Diffuse normal prior on main effects
-    mu.alpha ~ dnorm(0.0, 1.0E-3)
-    mu.beta ~ dnorm(0.0, 1.0E-3)
-    
+    ## Informative prior with hyper-parameters a and b for prior mean
+    ## and standard deviation of intercept mu.alpha
+    mu.alpha ~ dnorm(a, 1/(b^2))
+    mu.beta ~ dnorm(0.17, 1/(0.05^2))
+
+    ## Weakly informative prior on variance components
     tau.alpha ~ dscaled.gamma(1, 2)
-    tau.beta ~ dscaled.gamma(1, 2)
+    tau.beta ~ dscaled.gamma(1, 2)   
     
     sigma.alpha <- 1/sqrt(tau.alpha)
     sigma.beta <- 1/sqrt(tau.beta)
