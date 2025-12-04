@@ -8,12 +8,12 @@ high.cllev = which(rank(-cllev) %in% 1:2)
 high.clinf = which(rank(-clinf) %in% 1:2)
 high.clout = which(rank(-clout) %in% 1:2)
 
-plot.data <- data.frame(diag=rep(c("leverage","influence","influence/leverage"),
+plot.data <- data.frame(diag=rep(c("CLLEV","CLINF","CLOUT"),
                                  times=rep(nrow(abalone), 3)),
                         id = rep(id, times=3),
                         y=c(cllev, clinf, clout))
 
-text.data <- data.frame(diag=rep(c("leverage","influence","influence/leverage"),
+text.data <- data.frame(diag=rep(c("CLLEV","CLINF","CLOUT"),
                                  times=rep(2,3)),
                         id = id[c(high.cllev, high.clinf, high.clout)],
                         y=c(cllev[high.cllev], clinf[high.clinf], clout[high.clout]))
@@ -22,7 +22,7 @@ p <- ggplot(data=plot.data, mapping=aes(x=id, y=y, ymax=y)) +
     geom_linerange(ymin=0) +
     labs(x="observation index", y="conformal diagnostic") +
     geom_text(data=text.data, mapping=aes(label=id), hjust=1.1, vjust=0.5) +
-    facet_wrap(~ forcats::fct_relevel(diag, "leverage","influence","influence/leverage"),
+    facet_wrap(~ forcats::fct_relevel(diag, "CLLEV","CLINF","CLOUT"),
                dir="v", scales="free_y") +
     cowplot::theme_cowplot()
 
