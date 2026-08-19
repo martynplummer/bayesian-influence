@@ -1,6 +1,6 @@
 library(dplyr)
 
-unos <- read.csv("../unos-data.csv")
+unos <- read.csv("../common/unos-data.csv")
 unos$age <- unos$age/10
 
 ## Expand aggregated binomial data into individual Bernoulli outcomes
