@@ -104,10 +104,42 @@ dev.off()
 clout.hourly <- v.hourly*sum(h.hourly)/(sum(v.hourly) * h.hourly)
 cairo_pdf("bikeshare-clout-hourly.pdf", width=10, height=6)
 par(mfrow=c(1,2), las=TRUE)
-plot(clout.hourly[bikedata2011$dteday=="2011-05-02"], type="b", pch=16,
+plot(0:23 + 0.5,
+     clout.hourly[bikedata2011$dteday=="2011-05-02"], type="b", pch=16,
+     xlim=c(0,24),
      xaxt="n", xlab="time", ylab="CLOUT", main="2011-05-02", ylim=c(0, 45))
-axis(side=1, at=c(1, 7,13,19, 24), labels=c("00:00", "06:00", "12:00", "18:00", "23:00"))
-plot(clout.hourly[bikedata2011$dteday=="2011-08-23"], type="b", pch=16,
+axis(side=1, at=c(0, 6, 12, 18, 24), labels=c("00:00", "06:00", "12:00", "18:00", "24:00"))
+plot(0:23 + 0.5,
+    clout.hourly[bikedata2011$dteday=="2011-08-23"], type="b", pch=16,
      xaxt="n", xlab="time", ylab="CLOUT", main="2011-08-23", ylim=c(0, 45))
-axis(side=1, at=c(1, 7,13,19, 24), labels=c("00:00", "06:00", "12:00", "18:00", "23:00"))
+axis(side=1, at=c(0, 6, 12, 18, 24), labels=c("00:00", "06:00", "12:00", "18:00", "24:00"))
 dev.off()
+
+## Not shown in the article. What happened on these two days compared
+## to the rest of the week? We see an unusually large number of casual
+## hires during the periods highlighted by the outlier plots
+
+bikedata |>
+    filter(dteday >= as.Date("2011-05-02") & dteday <= as.Date("2011-05-06")) |>
+    mutate(outlier=dteday==as.Date("2011-05-02")) |>
+    ggplot(mapping=aes(x=hr+0.5, y=casual, group=dteday, col=outlier)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks=c(0, 6, 12, 18, 24), labels=c("00:00", "06:00", "12:00", "18:00", "24:00")) +
+    xlab("Time") +
+    ylab("Number of casual hires") +
+    scale_color_grey(start=0.8, end=0.2) +
+    cowplot::theme_cowplot()
+
+bikedata |>
+    filter(dteday >= as.Date("2011-08-22") & dteday <= as.Date("2011-08-26")) |>
+    mutate(outlier=dteday==as.Date("2011-08-23")) |>
+    ggplot(mapping=aes(x=hr+0.5, y=casual, group=dteday, col=outlier)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks=c(0, 6, 12, 18, 24), labels=c("00:00", "06:00", "12:00", "18:00", "24:00")) +
+    xlab("Time") +
+    ylab("Number of casual hires") +
+    scale_color_grey(start=0.8, end=0.2) +
+    cowplot::theme_cowplot()
+
