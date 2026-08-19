@@ -25,7 +25,7 @@ group <- rep(c("C", "B", "A"), times=c(10, 4, 61))
 hbk |>
     mutate(group=group) |>
     pivot_longer(cols=c(X1, X2, X3)) |>
-    ggplot(mapping=aes(x=value, y=Y, colour=group)) +
+    ggplot(mapping=aes(x=value, y=Y, colour=group, shape=group)) +
     xlab("predictor value") +
     geom_smooth(method="lm", formula=y~x, colour="grey", se=FALSE) +
     geom_point() +

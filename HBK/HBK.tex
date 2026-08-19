@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage{natbib, a4wide, graphicx, amsmath}
+\title{Hawkins-Bradu-Kass data}
+
+
+%\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\epsvec}{\boldsymbol{\epsilon}}
+%\newcommand{\deltavec}{\boldsymbol{\delta}}
+%\newcommand{\bY}{\mathbf Y}
+%\newcommand{\by}{\mathbf y}
+%\newcommand{\bx}{\mathbf x}
+%\newcommand{\Yvec}{\mathbf{Y}}
+%\newcommand{\wvec}{\boldsymbol{\omega}}
+%\newcommand{\rvec}{\mathbf r}
+%\newcommand{\bone}{\mathbf 1}
+%\newcommand{\pW}{p_W}
+%\newcommand{\pD}{p_D}
+%\newcommand{\pV}{p_V}
+%\newcommand{\rE}{\text{E}}
+
+
+\begin{document}
+\maketitle
+
+The Hawkins-Bradu-Kass (HBK) data is an artificial data set
+\citep{Hawkins1984} that challenges outlier detection methods based on
+perturbing a single observation. Figure~\ref{fig:hbk-data} illustrates
+the pairwise relationships between the three predictor variables
+$X_1 X_2, X_3$ and outcome $Y$ in the HBK data. The observations can
+be clustered into 3 groups: group A, which constitutes the majority of
+the observations, shows no relationship between the predictor
+variables and the outcome; group B consists of observations that have
+high-leverage with respect to group A but maintain the same null
+relationship with $Y$; group C are all outliers that pull the fitted
+least squares line away from the null.
+
+\begin{figure}
+\resizebox{\textwidth}{!}{\includegraphics{hbk-data.pdf}}
+\caption{\label{fig:hbk-data} Hawkins-Bradu-Kass (HBK) artificial data
+  set. Group A contains the majority of the data; group B is a set of
+  4 observations with high leverage; and group C is a set of 10
+  outliers. The gray line shows a univariate least-squares fit to each
+  predictor variable.}
+\end{figure}
+
+\section{Outlier detection}
+
+The masking effect of multiple outliers makes the detection of the
+outlying group impossible using univariate methods that consider only
+one observation at a time. \citet{Thomas2018} show how the 3 clusters
+of observations can be detected after fitting a Bayesian linear model
+by applying multivariate analysis methods to the posterior variance
+matrix $V$ of the log likelihood contributions.
+
+In a frequentist analysis, outlier-robust linear regression methods
+can be used to identify group C as a set of outliers and, after
+down-weighting their influence, reveal the underlying null
+relationship in groups A and B. In a Bayesian analysis, one way to
+improve robustness of a linear model is to use a 2-component normal
+mixture for the outcome variable $Y$. This allows a small proportion
+of the data to be contaminated with observations with a distinct mean
+and variance from the rest. Details of the mixture model are given in
+the supplementary materials. After fitting the mixture model,
+figure~\ref{fig:hbk-influence} shows the loadings for the first
+principal component of $V$ (top panel) and $\Omega$ (bottom
+panel). The top panel shows the direction of the perturbation
+$\epsvec$ that is maximally influential. This perturbation puts the
+highest loads on observations in group C. The bottom panel shows the
+maximally outlying perturbation, where observations in group C are
+given almost zero weight. The observations in group C are collectively
+influential but are not considered outliers in a mixture model that
+explicitly accounts for the presence of anomalous observations.
+
+\begin{figure}
+\resizebox{\textwidth}{!}{\includegraphics{hbk-influence.pdf}}
+\caption{\label{fig:hbk-influence} Diagnostics for a normal mixture
+  model fitted to the HBK data. The top panel (influence) shows factor
+  loadings for the first principal component of $V$ corresponding to a
+  maximally influential perturbation. The bottom panel (outlyingness)
+  shows factor loadings for the first principal component of the
+  outlier matrix $\Omega$ corresponding to a maximally outlying
+  perturbation.}
+\end{figure}
+
+\section{Cross conflict}
+
+The HBK data illustrates extreme cross-conflict. If any one of the
+observation groups A,B, or C is removed, then the omitted data will be
+in contradiction with a linear regression line fitted to the remaining
+two groups (See Figure~\ref{fig:hbk-data}).  To quantify this, the
+cross-conflict ratio $p_{Vi}/p_{Wi}$ was calculated for each group in
+turn. The results are shown in table~\ref{tab:hbk1}. The top row shows
+the results for a linear model with a normal error distribution. This
+shows very high cross-conflict ratios for all groups with group A
+having the highest ratio with $p_{VA}/p_{WA}=59.5$. The second row
+shows results for the mixture model 
+Cross-conflict ratios are substantially
+reduced compared to the linear model but still high for groups A (4.4)
+and C (7.9). The use of an outlier-robust mixture model does not
+eliminate the cross-conflict, which is a feature of the data, not the
+model.
+
+\begin{table}[th]
+\centering
+\begin{tabular}{lrrr}
+\hline
+Model          & \multicolumn{3}{c}{Group} \\
+\cline{2-4}
+               &   A    &   B   &   C  \\
+\hline
+Normal         &  59.5  &   4.89 & 17.6\\
+Normal mixture &   4.4  &   1.81 &  7.9\\
+\hline
+\end{tabular}
+\caption{\label{tab:hbk1} Cross-conflict in the HBK data measured by
+  the ratio $p_{Vi}/p_{Wi}$ when only only outcomes from group
+  $i \in \left\{A, B, C\right\}$ are considered as data and
+  information the other two groups is absorbed into the prior.}
+\end{table}
+
+\bibliographystyle{apalike}
+\bibliography{HBK}
+  
+\end{document}
