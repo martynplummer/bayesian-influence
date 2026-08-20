@@ -1,7 +1,0 @@
-Bike Sharing data from the UCI machine learning repository
-https://doi.org/10.24432/C5W894
-
-Run the model in bikesharing-data.R. Results will be saved in the file
-bikesharing.RData which is then read by bikesharing-figures.R
-
-
