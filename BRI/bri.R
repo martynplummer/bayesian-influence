@@ -17,8 +17,8 @@ s2 <- jags.samples(m, n.iter=10000, variable.names="y",
 linf <- c(apply(s2$logdensity$var$y, 1, mean))
 llev <- c(apply(s2$leverage$mean$y, 1, mean))
 
-conformal.linf <- linf/sum(linf)
-conformal.llev <- llev/sum(llev)
+clinf <- linf/sum(linf)
+cllev <- llev/sum(llev)
 
 ## Check for cross-conflict
 ## We need to do some calculations by hand here since JAGS will not produce the pW
