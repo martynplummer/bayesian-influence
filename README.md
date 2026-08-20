@@ -3,7 +3,7 @@
 Supplementary material to accompany the article Bayesian Measures of
 Leverage and Influence. The supplementary material allows all the
 figures and tables in the article to be reproduced, and also includes
-some additional supporting material.
+some additional figures not shown in the article.
 
 There are 5 examples
 
