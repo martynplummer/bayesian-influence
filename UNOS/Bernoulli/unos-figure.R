@@ -10,7 +10,7 @@ set.seed(121125)
 jags.seed(201125)
 
 source("read-unos-data.R")
-source("unos-init.R")
+source("../common/unos-init.R")
 
 ### Get MLEs for the fixed effects using glmer
 

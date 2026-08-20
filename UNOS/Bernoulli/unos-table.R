@@ -6,7 +6,7 @@ set.seed(121125)
 jags.seed(201125)
 
 source("read-unos-data.R")
-source("unos-init.R")
+source("../common/unos-init.R")
 
 cal_diagnostics <- function(model.file, ...) {
 

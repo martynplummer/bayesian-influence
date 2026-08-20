@@ -1,4 +1,3 @@
-
 library(ggplot2)
 library(dplyr)
 library(cowplot)
@@ -8,7 +7,7 @@ load.module("diag")
 library(lme4)
 
 set.seed(231125)
-set.seed(521132)
+jags.seed(521132)
 
 unos <- read.csv("../common/unos-data.csv")
 unos$age <- unos$age/10 
