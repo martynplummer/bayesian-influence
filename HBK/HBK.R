@@ -25,10 +25,10 @@ group <- rep(c("C", "B", "A"), times=c(10, 4, 61))
 hbk |>
     mutate(group=group) |>
     pivot_longer(cols=c(X1, X2, X3)) |>
-    ggplot(mapping=aes(x=value, y=Y, colour=group, shape=group)) +
+    ggplot(mapping=aes(x=value, y=Y)) +
     xlab("predictor value") +
     geom_smooth(method="lm", formula=y~x, colour="grey", se=FALSE) +
-    geom_point() +
+    geom_point(mapping=aes(colour=group, shape=group)) +
     facet_wrap(~name, scales="free_x", axes="all") +
     scale_color_colorblind() +
     theme_cowplot() -> hbkplot
@@ -45,6 +45,7 @@ summary(lmrob.out)
 ### Fit linear model in JAGS
 
 set.seed(4273479)
+jags.seed(9743724)
 nchain <- 5
 
 initfun <- function() {
