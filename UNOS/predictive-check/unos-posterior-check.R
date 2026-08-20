@@ -51,16 +51,24 @@ cal_diagnostics <- function(y) {
 }
 
 pD.rep <- pW.rep <- pV.rep <- numeric(NREPS)
-cat("\n")
+
+if (interactive()) {
+    pb <- txtProgressBar(0, NREPS, initial=0, style=3)
+}
 for (i in 1:NREPS) {
-    cat("*")
     rep.samples <- cal_diagnostics(yrep.samples[,i,1,drop=TRUE])
     pD.rep[i] <- mean(rep.samples$pD)
     pV.rep[i] <- mean(rep.samples$pV)
     pW.rep[i] <- mean(rep.samples$pW.binary)
-}
-cat("\n")
+    if (interactive()) {
+        setTxtProgressBar(pb, i)
+        if (i == NREPS) close(pb)
+    }
 
+}
+
+### Our focus of interest is on the variability of pV/pW
 quantile(pV.rep/pW.rep, c(0.05, 0.50, 0.95))
 
+### There is much less variability in pD/pW
 quantile(pD.rep/pW.rep, c(0.05, 0.50, 0.95))
