@@ -6,7 +6,6 @@ glm.out <- glm(shucked.weight ~ sex + log(length) + log(diameter) +
 summary(glm.out)
 
 library(rjags)
-load.module("diag")
 
 jags.data <- vector("list")
 jags.data$sex <- ifelse(abalone$sex=="F", 1, 0)
@@ -25,7 +24,8 @@ update(mod, 2000)
 ## Diagnostics
 
 diag.samples <- jags.samples(mod, "shucked.weight", n.iter=1000,
-                             stat=c("logdensity", "leverage"), summary=c("var","mean"))
+                             stat=c("logdensity", "leverage"),
+                             summary=c("var","mean"))
 
 ## Calculate conformal local influence clinf
 linf <- diag.samples$logdensity$var$shucked.weight
@@ -39,3 +39,5 @@ cllev <- llev/sum(llev)
 
 ## Calculate conformal outlyingness clout
 clout <- clinf/cllev
+
+save(list=c("clinf","cllev","clout"), file="abalone.RData")

@@ -1,4 +1,6 @@
-source("abalone-fit.R")
+source("read-data.R")
+load("abalone.RData")
+
 id <- abalone$id
 
 library(ggplot2)
